@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HealthAudit AI</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --secondary: #34a853;
+      --danger: #ea4335;
+      --warning: #fbbc05;
+      --light: #f8f9fa;
+      --dark: #202124;
+      --gray: #5f6368;
+      --border: #dadce0;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    body {
+      margin: 0;
+      background-color: #f5f7fa;
+      color: var(--dark);
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 2.2em;
+      margin: 0;
+    }
+    .tagline {
+      color: var(--gray);
+      font-size: 1.1em;
+      margin: 10px 0 0;
+    }
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+    .step {
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin: 0 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .step.active {
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+    }
+    .step:hover {
+      background: #e8f0fe;
+    }
+    .step.active:hover {
+      background: var(--primary);
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .card.active {
+      display: block;
+    }
+    input[type="file"], input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1em;
+    }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #0d5bbb;
+    }
+    .result {
+      background: #f0f7ff;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    .qa {
+      margin: 20px 0;
+    }
+    .question {
+      background: #e8f0fe;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .answer {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--secondary);
+    }
+    .alert {
+      background: #fff8e6;
+      border-left: 4px solid var(--warning);
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    .error {
+      background: #ffebee;
+      border-left: 4px solid var(--danger);
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    .code {
+      font-family: monospace;
+      background: #f1f3f5;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .letter {
+      white-space: pre-line;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: inherit;
+      margin: 15px 0;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--gray);
+      font-size: 0.9em;
+    }
+    @media (max-width: 600px) {
+      .steps {
+        flex-direction: column;
+      }
+      .step {
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>HealthAudit AI</h1>
+      <p class="tagline">Your personal Financial Auditor in Healthcare</p>
+    </header>
+
+    <div class="steps">
+      <div class="step active" id="step1-btn">Step 1: Decode Policy</div>
+      <div class="step" id="step2-btn">Step 2: Predict Cost</div>
+      <div class="step" id="step3-btn">Step 3: Audit Bill</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="card active" id="step1">
+      <h2>Upload Your Insurance Policy</h2>
+      <p>We'll decode the fine print so you know exactly what you're paying for.</p>
+      <input type="file" id="policy-upload" accept=".pdf,.doc,.txt" />
+      <button id="analyze-policy">Analyze Policy</button>
+
+      <div id="policy-result" class="result" style="display:none;">
+        <strong>Your Coverage Summary:</strong><br>
+        - Deductible: $1,000/year<br>
+        - Coinsurance: 80/20 after deductible<br>
+        - Copay: $25 for PCP, $50 for specialist<br>
+        - Network: In-network providers only<br>
+        - Pre-authorization required for MRI, CT, hospitalization<br>
+        - Exclusions: Cosmetic dental implants not covered
+      </div>
+
+      <div class="qa">
+        <h3>Ask Anything</h3>
+        <select id="policy-questions">
+          <option value="">-- Select a common question --</option>
+          <option value="q1">Does my plan cover knee MRI?</option>
+          <option value="q2">What if I go to an out-of-network hospital?</option>
+          <option value="q3">How much will I pay for a $15,000 surgery?</option>
+        </select>
+        <button id="ask-question">Ask</button>
+
+        <div id="q1" class="answer" style="display:none;">
+          ✅ Yes, but <strong>pre-authorization is required</strong>. Without it, you may pay 100%. See Section 4.3.2.
+        </div>
+        <div id="q2" class="answer" style="display:none;">
+          ⚠️ You can go, but your costs will be much higher. Only emergency care is fully covered out-of-network.
+        </div>
+        <div id="q3" class="answer" style="display:none;">
+          💰 If deductible is met: you pay 20% = $3,000.<br>
+          If not: $1,000 (deductible) + 20% of $14,000 = $2,800 → <strong>Total: $3,800</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card" id="step2">
+      <h2>Predict Procedure Cost</h2>
+      <p>Enter your procedure to estimate your out-of-pocket cost.</p>
+      <input type="text" id="procedure" placeholder="e.g. Knee Arthroscopy" />
+      <input type="text" id="icd" placeholder="ICD-10 Code (e.g. M23.8)" />
+      <input type="text" id="city" placeholder="Your City, State (e.g. Austin, TX)" />
+      <button id="predict-cost">Get Estimate</button>
+
+      <div id="cost-result" class="result" style="display:none;">
+        <strong>Estimated Breakdown:</strong><br>
+        - Surgeon: $3,200<br>
+        - Anesthesia: $1,100<br>
+        - Facility: $2,500<br>
+        - Supplies: $1,400<br>
+        - Room (0.5 day): $800<br>
+        - Admin fees: $3,000 ⚠️<br>
+        → <strong>Average Total: $12,000</strong>
+      </div>
+
+      <div id="personal-cost" class="alert" style="display:none;">
+        💡 Based on your policy:<br>
+        You haven't met your $1,000 deductible yet.<br>
+        Your out-of-pocket cost: <strong>$3,200</strong> ($1,000 + 20% of $11,000).
+      </div>
+
+      <div class="alert" style="display:none;">
+        🔍 Tip: One clinic in Austin offers this for $7,500. Request a pre-billing estimate!
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="card" id="step3">
+      <h2>Upload Your Medical Bill</h2>
+      <p>We'll audit it for errors and overcharging.</p>
+      <input type="file" id="bill-upload" accept=".pdf,.jpg,.png" />
+      <button id="audit-bill">Audit Bill</button>
+
+      <div id="audit-result" style="display:none;">
+        <h3>Decoded Charges</h3>
+        <table width="100%" border="0" cellspacing="0" cellpadding="8">
+          <tr style="background:#f1f3f5;">
+            <th align="left">Code</th>
+            <th align="left">Description</th>
+            <th align="right">Amount</th>
+          </tr>
+          <tr>
+            <td class="code">CPT 29881</td>
+            <td>Arthroscopy, knee, with meniscectomy</td>
+            <td align="right">$3,200</td>
+          </tr>
+          <tr>
+            <td class="code">CPT 99143</td>
+            <td>Monitoring during conscious sedation</td>
+            <td align="right">$1,100</td>
+          </tr>
+          <tr>
+            <td class="code">CPT 96372</td>
+            <td>Therapeutic injection (separate line)</td>
+            <td align="right">$300</td>
+          </tr>
+          <tr>
+            <td class="code">HCPCS J2001</td>
+            <td>Ketorolac injection</td>
+            <td align="right">$250</td>
+          </tr>
+        </table>
+
+        <h3>Detected Issues</h3>
+        <div class="error">
+          ❌ <strong>Double Billing:</strong><br>
+          CPT 99143 already includes drug administration. CPT 96372 is redundant.
+        </div>
+        <div class="error">
+          ❌ <strong>Unbundling:</strong><br>
+          CPT 29881 was split into 3 codes (29870, 29880, 29877), increasing cost by 35%.
+        </div>
+        <div class="error">
+          ❌ <strong>Overpriced Stay:</strong><br>
+          $1,200/night vs. $700 average in Austin. +71% markup.
+        </div>
+
+        <button id="generate-letter">Generate Appeal Letter</button>
+
+        <div id="appeal-letter" class="letter" style="display:none;">
+Dear Billing Department,
+
+I am reviewing invoice #INV-88321 dated 04/15/2025 and have identified several discrepancies:
+
+1. CPT 99143 includes drug administration. Charging separately for CPT 96372 constitutes double billing.
+2. CPT 29881 was improperly unbundled into three separate codes, violating CMS NCCI guidelines.
+3. The room charge of $1,200/night exceeds the local average by 71%.
+
+I request a corrected bill and adjustment of charges.
+
+Sincerely,  
+[Your Name]
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      HealthAudit AI • Because your health shouldn't cost you a fortune.
+    </footer>
+  </div>
+
+  <script>
+    // Simple tab switching
+    document.getElementById('step1-btn').onclick = () => showStep(1);
+    document.getElementById('step2-btn').onclick = () => showStep(2);
+    document.getElementById('step3-btn').onclick = () => showStep(3);
+
+    function showStep(n) {
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`step${i}`).classList.remove('active');
+        document.getElementById(`step${i}-btn`).classList.remove('active');
+      }
+      document.getElementById(`step${n}`).classList.add('active');
+      document.getElementById(`step${n}-btn`).classList.add('active');
+    }
+
+    // Step 1: Analyze Policy
+    document.getElementById('analyze-policy').onclick = () => {
+      document.getElementById('policy-result').style.display = 'block';
+    };
+
+    document.getElementById('ask-question').onclick = () => {
+      const sel = document.getElementById('policy-questions').value;
+      for (const q of ['q1', 'q2', 'q3']) {
+        document.getElementById(q).style.display = 'none';
+      }
+      if (sel) {
+        document.getElementById(sel).style.display = 'block';
+      }
+    };
+
+    // Step 2: Predict Cost
+    document.getElementById('predict-cost').onclick = () => {
+      document.getElementById('cost-result').style.display = 'block';
+      document.getElementById('personal-cost').style.display = 'block';
+    };
+
+    // Step 3: Audit Bill
+    document.getElementById('audit-bill').onclick = () => {
+      document.getElementById('audit-result').style.display = 'block';
+    };
+
+    document.getElementById('generate-letter').onclick = () => {
+      document.getElementById('appeal-letter').style.display = 'block';
+    };
+  </script>
+</body>
+</html>
