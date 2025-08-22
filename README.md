@@ -1,5 +1,6 @@
 # HealthAudit AI: Understand. Pay Less. Dispute Boldly. 💡
-(https://img.shields.io/badge/license-MIT-blue.svg)
+
+![alt text](https://img.shields.io/badge/license-MIT-blue.svg)
 
 
 > **Your personal Financial Auditor in Healthcare**  
@@ -127,4 +128,5 @@ Reach out at:
 ---
 
 **HealthAudit AI — Because your health shouldn't cost you a fortune.**  
+
 🚀 Built for the Medi Hack 2025
